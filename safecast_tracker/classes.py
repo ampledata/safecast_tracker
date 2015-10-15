@@ -13,6 +13,7 @@ import logging.handlers
 import threading
 
 import pygatt
+import pygatt.util
 
 import safecast_tracker.constants
 
@@ -52,21 +53,23 @@ class BGeigieNanoPoller(threading.Thread):
     def __init__(self, mac):
         threading.Thread.__init__(self)
         self.mac = mac
-
-        self.bgn_props = {}
-        for prop in self.BGN_PROPERTIES:
-            self.bgn_props[prop] = None
-
         self.str_buf = ''
         self.bgn = None
+        self.bgn_props = {}
+        [self.bgn_props[p] = None for p in self.BGN_PROPERTIES]
         self._connect()
 
     def _connect(self):
         pygatt.util.reset_bluetooth_controller()
-        self.bgn = pygatt.pygatt.BluetoothLEDevice(self.mac)
+        self.bgn = pygatt.BluetoothLEDevice(self.mac)
         self.bgn.connect()
         self.bgn.char_write(32, bytearray([0x03, 0x00]))
         self.bgn.subscribe(self.SUB, self.store)
+
+    def _disconnect(self):
+        if self.bgn is not None:
+            self.bgn.disconnect()
+        pygatt.util.reset_bluetooth_controller()
 
     def store(self, x, y):
         str_y = str(y)
@@ -90,3 +93,9 @@ class BGeigieNanoPoller(threading.Thread):
 
     def run(self):
         self.bgn.run()
+
+    def stop(self):
+        """
+        Stop the thread at the next opportunity.
+        """
+        self.bgn._disconnect()
