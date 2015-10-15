@@ -1,0 +1,10 @@
+# Python Distribution Package Requirements for Safecast Tracker.
+#
+# Source:: https://github.com/ampledata/safecast_tracker
+# Author:: Greg Albrecht W2GMD <gba@orionlabs.co>
+# Copyright:: Copyright 2015 Orion Labs, Inc.
+# License:: Apache License, Version 2.0
+
+
+flake8==2.1.0
+pylint==1.2.1
