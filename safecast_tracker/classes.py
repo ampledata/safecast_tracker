@@ -98,4 +98,4 @@ class BGeigieNanoPoller(threading.Thread):
         """
         Stop the thread at the next opportunity.
         """
-        self.bgn._disconnect()
+        self._disconnect()
