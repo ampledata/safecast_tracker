@@ -140,8 +140,6 @@ def sc_tracker():
                         time.sleep(float(opts.interval))
 
     except KeyboardInterrupt:
-        #sc_p.stop()
-        pass
+        sc_p.stop()
     finally:
-        #sc_p.stop()
-        pass
+        sc_p.stop()
