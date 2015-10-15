@@ -66,11 +66,6 @@ class BGeigieNanoPoller(threading.Thread):
         self.bgn.char_write(32, bytearray([0x03, 0x00]))
         self.bgn.subscribe(self.SUB, self.store)
 
-    def _disconnect(self):
-        if self.bgn is not None:
-            self.bgn.disconnect()
-        pygatt.util.reset_bluetooth_controller()
-
     def store(self, x, y):
         str_y = str(y)
         if '$' in str_y:
@@ -92,11 +87,16 @@ class BGeigieNanoPoller(threading.Thread):
             self.str_buf = ''.join([self.str_buf, str_y])
 
     def run(self):
-        self.bgn.run()
+        try:
+            self.bgn.run()
+        except StopIteration:
+            pass
 
     def stop(self):
         """
         Stop the thread at the next opportunity.
         """
-        self._disconnect()
-        return True
+        if self.bgn is not None:
+            self.bgn.stop()
+            self.bgn.disconnect()
+        pygatt.util.reset_bluetooth_controller()
