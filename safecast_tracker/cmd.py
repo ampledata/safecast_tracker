@@ -99,7 +99,8 @@ def sc_tracker():
                 gps_ew = sc_p.bgn_props['east_west']
 
                 if gps_latitude is not None and gps_hemisphere is not None:
-                    aprs_latitude = "%04.02f%s" % (gps_latitude, gps_hemisphere)
+                    aprs_latitude = "%04.02f%s" % (
+                        gps_latitude, gps_hemisphere)
                 if gps_longitude is not None and gps_ew is not None:
                     aprs_longitude = "%04.02f%s" % (gps_longitude, gps_ew)
 
@@ -121,19 +122,10 @@ def sc_tracker():
                             sc_p.bgn_props['rad_1_min']
                         )
                     )
-                    #frame = aprs.util.create_telemetry_frame(
-                    #    source=src_callsign,
-                    #    destination='APRS',
-                    #    sequence=i,
-                    #    val1=sc_p.bgn_props['rad_1_min'] / 350,
-                    #    val2=0,
-                    #    val3=0,
-                    #    val4=0,
-                    #    val5=0,
-                    #    bits=0
-                    #)
+
                     logger.info('frame=%s', frame)
                     aprs_i.send(frame)
+
                     if opts.interval == 0:
                         break
                     else:

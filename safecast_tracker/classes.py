@@ -53,38 +53,52 @@ class BGeigieNanoPoller(threading.Thread):
     def __init__(self, mac):
         threading.Thread.__init__(self)
         self.mac = mac
-        self.str_buf = ''
+        self.str_buffer = ''
         self.bgn = None
         self.bgn_props = {}
-        [self.bgn_props.update({p: None}) for p in self.BGN_PROPERTIES]
+        _ = [self.bgn_props.update({p: None}) for p in self.BGN_PROPERTIES]
         self._connect()
 
     def _connect(self):
+        """
+        Connects to BGN.
+        """
         pygatt.util.reset_bluetooth_controller()
         self.bgn = pygatt.BluetoothLEDevice(self.mac)
         self.bgn.connect()
         self.bgn.char_write(32, bytearray([0x03, 0x00]))
         self.bgn.subscribe(self.SUB, self.store)
 
-    def store(self, x, y):
-        str_y = str(y)
-        if '$' in str_y:
+    def store(self, handle, handle_value):
+        """
+        Stores handle value in string buffer.
+
+        :param handle:
+        :param handle_value: Value from handle.
+        """
+        _ = handle
+        handle_str = str(handle_value)
+
+        if '$' in handle_str:
             self.bgn_props.update(
-                dict(zip(self.BGN_PROPERTIES, self.str_buf.split(','))))
+                dict(zip(self.BGN_PROPERTIES, self.str_buffer.split(','))))
 
             if self.bgn_props['altitude'] is not None:
                 self.bgn_props['altitude'] = float(self.bgn_props['altitude'])
+
             if self.bgn_props['latitude'] is not None:
                 self.bgn_props['latitude'] = float(self.bgn_props['latitude'])
+
             if self.bgn_props['longitude'] is not None:
                 self.bgn_props['longitude'] = float(
                     self.bgn_props['longitude'])
+
             if self.bgn_props['rad_1_min'] is not None:
                 self.bgn_props['rad_1_min'] = int(self.bgn_props['rad_1_min'])
 
-            self.str_buf = str_y
+            self.str_buffer = handle_str
         else:
-            self.str_buf = ''.join([self.str_buf, str_y])
+            self.str_buffer = ''.join([self.str_buffer, handle_str])
 
     def run(self):
         try:
