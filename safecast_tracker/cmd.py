@@ -29,13 +29,13 @@ def setup_logging(log_level=None):
     :returns: logger instance
     :rtype: instance
     """
-    log_level = log_level or aprs.constants.LOG_LEVEL
+    log_level = log_level or safecast_tracker.constants.LOG_LEVEL
 
     logger = logging.getLogger(__name__)
     logger.setLevel(log_level)
     console_handler = logging.StreamHandler()
     console_handler.setLevel(log_level)
-    console_handler.setFormatter(aprs.constants.LOG_FORMAT)
+    console_handler.setFormatter(safecast_tracker.constants.LOG_FORMAT)
     logger.addHandler(console_handler)
     logger.propagate = False
 
@@ -76,6 +76,7 @@ def sc_tracker():
 
     sc_p = safecast_tracker.BGeigieNanoPoller(opts.mac_address)
     sc_p.start()
+
     time.sleep(aprs.constants.GPS_WARM_UP)
 
     aprs_i = aprs.APRS(opts.callsign, opts.passcode)
