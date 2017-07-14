@@ -8,26 +8,17 @@ Safecast Tracker.
 ~~~~
 
 
-:author: Greg Albrecht W2GMD <gba@orionlabs.co>
-:copyright: Copyright 2015 Orion Labs, Inc.
+:author: Greg Albrecht W2GMD <oss@undef.net>
+:copyright: Copyright 2017 Greg Albrecht
 :license: Apache License, Version 2.0
 :source: <https://github.com/ampledata/safecast_tracker>
 
 """
 
-import logging
+from .constants import LOG_LEVEL, LOG_FORMAT, GPS_WARM_UP  # NOQA
 
-from .classes import BGeigieNanoPoller
+from .classes import BGeigieNanoPoller  # NOQA
 
-
-# Set default logging handler to avoid "No handler found" warnings.
-try:  # Python 2.7+
-    from logging import NullHandler
-except ImportError:
-    class NullHandler(logging.Handler):
-        """Default logging handler to avoid "No handler found" warnings."""
-        def emit(self, record):
-            """Default logging handler to avoid "No handler found" warnings."""
-            pass
-
-logging.getLogger(__name__).addHandler(NullHandler())
+__author__ = 'Greg Albrecht W2GMD <oss@undef.net>'
+__license__ = 'Apache License, Version 2.0'
+__copyright__ = 'Copyright 2017 Greg Albrecht'

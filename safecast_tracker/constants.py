@@ -5,12 +5,11 @@
 Constants for Safecast Tracker.
 """
 
-__author__ = 'Greg Albrecht W2GMD <gba@orionlabs.co>'
-__license__ = 'Apache License, Version 2.0'
-__copyright__ = 'Copyright 2015 Orion Labs, Inc.'
-
-
 import logging
+
+__author__ = 'Greg Albrecht W2GMD <oss@undef.net>'
+__license__ = 'Apache License, Version 2.0'
+__copyright__ = 'Copyright 2017 Greg Albrecht'
 
 
 LOG_LEVEL = logging.INFO

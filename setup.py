@@ -9,19 +9,16 @@ Source:: https://github.com/ampledata/safecast_tracker
 
 
 __title__ = 'safecast_tracker'
-__version__ = '1.0.0'
-__author__ = 'Greg Albrecht W2GMD <gba@orionlabs.co>'
+__version__ = '2.0.0b1'
+__author__ = 'Greg Albrecht W2GMD <oss@undef.net>'
 __license__ = 'Apache License, Version 2.0'
-__copyright__ = 'Copyright 2015 Orion Labs, Inc.'
+__copyright__ = 'Copyright 2017 Greg Albrecht'
 
 
 import os
 import sys
 
-try:
-    from setuptools import setup
-except ImportError:
-    from distutils.core import setup  # pylint: disable=F0401,E0611
+import setptools
 
 
 def publish():
@@ -39,7 +36,7 @@ setup(
     version=__version__,
     description='Safecast Tracker for APRS.',
     author='Greg Albrecht',
-    author_email='gba@orionlabs.co',
+    author_email='oss@undef.net',
     packages=['safecast_tracker'],
     package_data={'': ['LICENSE']},
     license=open('LICENSE').read(),

@@ -3,21 +3,18 @@
 
 """Safecast Tracker commands."""
 
-__author__ = 'Greg Albrecht W2GMD <gba@orionlabs.co>'
-__copyright__ = 'Copyright 2015 Orion Labs, Inc.'
-__license__ = 'All rights reserved. Do not redistribute.'
-
-
 import argparse
 import logging
 import logging.handlers
 import time
 
 import aprs
-import aprs.util
 
 import safecast_tracker
-import safecast_tracker.constants
+
+__author__ = 'Greg Albrecht W2GMD <oss@undef.net>'
+__license__ = 'Apache License, Version 2.0'
+__copyright__ = 'Copyright 2017 Greg Albrecht'
 
 
 def setup_logging(log_level=None):
@@ -77,12 +74,12 @@ def sc_tracker():
     sc_p = safecast_tracker.BGeigieNanoPoller(opts.mac_address)
     sc_p.start()
 
-    time.sleep(aprs.constants.GPS_WARM_UP)
+    time.sleep(safecast_tracker.GPS_WARM_UP)
 
-    aprs_i = aprs.APRS(opts.callsign, opts.passcode)
+    aprs_i = aprs.TCP(opts.callsign, opts.passcode)
     aprs_i.connect()
 
-    src_callsign = aprs.util.full_callsign(
+    src_callsign = aprs.full_callsign(
         {'callsign': opts.callsign, 'ssid': opts.ssid})
 
     try:
@@ -106,7 +103,7 @@ def sc_tracker():
                     aprs_longitude = "%04.02f%s" % (gps_longitude, gps_ew)
 
                 if aprs_latitude is not None and aprs_longitude is not None:
-                    frame = aprs.util.create_location_frame(
+                    frame = aprs.create_location_frame(
                         source=src_callsign,
                         destination='APRS',
                         latitude=aprs_latitude,

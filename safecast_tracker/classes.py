@@ -3,19 +3,17 @@
 
 """Safecast Tracker Class Definitions"""
 
-__author__ = 'Greg Albrecht W2GMD <gba@orionlabs.co>'
-__license__ = 'Apache License, Version 2.0'
-__copyright__ = 'Copyright 2015 Orion Labs, Inc.'
-
-
 import logging
 import logging.handlers
 import threading
 
 import pygatt
-import pygatt.util
 
-import safecast_tracker.constants
+import safecast_tracker
+
+__author__ = 'Greg Albrecht W2GMD <oss@undef.net>'
+__license__ = 'Apache License, Version 2.0'
+__copyright__ = 'Copyright 2017 Greg Albrecht'
 
 
 class BGeigieNanoPoller(threading.Thread):
@@ -43,10 +41,10 @@ class BGeigieNanoPoller(threading.Thread):
     SUB = 'a1e8f5b1-696b-4e4c-87c6-69dfe0b0093b'
 
     _logger = logging.getLogger(__name__)
-    _logger.setLevel(safecast_tracker.constants.LOG_LEVEL)
+    _logger.setLevel(safecast_tracker.LOG_LEVEL)
     _console_handler = logging.StreamHandler()
-    _console_handler.setLevel(safecast_tracker.constants.LOG_LEVEL)
-    _console_handler.setFormatter(safecast_tracker.constants.LOG_FORMAT)
+    _console_handler.setLevel(safecast_tracker.LOG_LEVEL)
+    _console_handler.setFormatter(safecast_tracker.LOG_FORMAT)
     _logger.addHandler(_console_handler)
     _logger.propagate = False
 
@@ -54,20 +52,11 @@ class BGeigieNanoPoller(threading.Thread):
         threading.Thread.__init__(self)
         self.mac = mac
         self.str_buffer = ''
-        self.bgn = None
+        self.ble_adapter = None
+        self.ble_device = None
         self.bgn_props = {}
         _ = [self.bgn_props.update({p: None}) for p in self.BGN_PROPERTIES]
         self._connect()
-
-    def _connect(self):
-        """
-        Connects to BGN.
-        """
-        pygatt.util.reset_bluetooth_controller()
-        self.bgn = pygatt.BluetoothLEDevice(self.mac)
-        self.bgn.connect()
-        self.bgn.char_write(32, bytearray([0x03, 0x00]))
-        self.bgn.subscribe(self.SUB, self.store)
 
     def store(self, handle, handle_value):
         """
@@ -101,16 +90,18 @@ class BGeigieNanoPoller(threading.Thread):
             self.str_buffer = ''.join([self.str_buffer, handle_str])
 
     def run(self):
+        self.ble_adapter = pygatt.GATTToolBackend()
         try:
-            self.bgn.run()
-        except StopIteration:
-            pass
+            self.ble_adapter.start()
+            self.ble_device = self.ble_adapter.connect(self.mac)
+            self.ble_device.char_write_handle(32, bytearray([0x03, 0x00]))
+            self.ble_device.subscribe(self.SUB, self.store)
+        finally:
+            self.ble_adapter.stop()
 
     def stop(self):
         """
         Stop the thread at the next opportunity.
         """
-        if self.bgn is not None:
-            self.bgn.stop()
-            self.bgn.disconnect()
-        pygatt.util.reset_bluetooth_controller()
+        if self.ble_adapter is not None:
+            self.ble_adapter.stop()
