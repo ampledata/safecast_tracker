@@ -79,11 +79,15 @@ def sc_tracker():
     aprs_i = aprs.TCP(opts.callsign, opts.passcode)
     aprs_i.start()
 
-    src_callsign = aprs.full_callsign(
-        {'callsign': opts.callsign, 'ssid': opts.ssid})
+    # src_callsign = aprs.full_callsign(
+    #     {'callsign': opts.callsign, 'ssid': opts.ssid})
 
     try:
         while 1:
+            print(sc_p.bgn_props)
+            time.sleep(5)
+
+        def taco():
             gps_valid = sc_p.bgn_props['gps_valid'] == 'A'
             rad_valid = sc_p.bgn_props['rad_valid'] == 'A'
 
