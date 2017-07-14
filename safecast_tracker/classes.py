@@ -56,7 +56,6 @@ class BGeigieNanoPoller(threading.Thread):
         self.ble_device = None
         self.bgn_props = {}
         _ = [self.bgn_props.update({p: None}) for p in self.BGN_PROPERTIES]
-        self._connect()
 
     def store(self, handle, handle_value):
         """
