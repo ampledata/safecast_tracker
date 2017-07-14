@@ -129,7 +129,8 @@ def sc_tracker():
                     aprs_i.send(frame)
 
                     if opts.interval == 0:
-                        break
+                        #break
+                        pass
                     else:
                         time.sleep(float(opts.interval))
 
