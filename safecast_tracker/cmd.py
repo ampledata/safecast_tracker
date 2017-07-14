@@ -77,7 +77,7 @@ def sc_tracker():
     time.sleep(safecast_tracker.GPS_WARM_UP)
 
     aprs_i = aprs.TCP(opts.callsign, opts.passcode)
-    aprs_i.connect()
+    aprs_i.start()
 
     src_callsign = aprs.full_callsign(
         {'callsign': opts.callsign, 'ssid': opts.ssid})
